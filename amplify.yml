@@ -1,0 +1,19 @@
+version: 1
+frontend:
+  phases:
+    preBuild:
+      commands:
+        - npm ci
+    build:
+      commands:
+        # O servidor Next.js no Amplify só enxerga em runtime as variáveis gravadas no .env.production.
+        - env | grep -E '^(APP_REGION|DOCS_BUCKET|DOCS_TABLE|GEMINI_API_KEY|GEMINI_CHAT_MODEL|GEMINI_EMBED_MODEL)=' >> .env.production
+        - npm run build
+  artifacts:
+    baseDirectory: .next
+    files:
+      - "**/*"
+  cache:
+    paths:
+      - .next/cache/**/*
+      - node_modules/**/*
